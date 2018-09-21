@@ -1,2 +1,1 @@
-# number-theory-playground-
-playing around with visual number theory 
+# number-theory-playground
