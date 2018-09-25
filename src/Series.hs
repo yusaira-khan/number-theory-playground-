@@ -26,9 +26,12 @@ fibscousin = 1 : 1 : nextNonOverlappedNum fibscousin
     --next (a : t@(b:_)) = ((traceStack (show (a,b))) (a+b)) : next t
 
 lukas = 1 : 3 : nextOverlappedNum lukas
-hamming = id
 interleave = id
 sieve = id 
 
 subsequentPowers :: Int-> [Int]
 subsequentPowers x =  iterate (x*) 1
+
+merge:: [Int] -> [Int]-> [Int]
+merge xl@(x:xs) yl@(y:ys) = if (x < y) then (x:(merge xs yl)) else if (x == y) then (x:(merge xs ys)) else y:(merge xl ys)
+hamming = merge (subsequentPowers 2) (subsequentPowers 3)

@@ -3,4 +3,4 @@ module Main where
 import Series
 
 main :: IO ()
-main = print $take 10 $ subsequentPowers 5
+main = print $take 10 hamming 
