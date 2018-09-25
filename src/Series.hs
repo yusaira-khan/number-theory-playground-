@@ -40,4 +40,4 @@ subsequentPowersCousin x =  iterate (x*)
 
 merge:: [Int] -> [Int]-> [Int]
 merge xl@(x:xs) yl@(y:ys) = if (x < y) then (x:(merge xs yl)) else if (x == y) then (x:(merge xs ys)) else y:(merge xl ys)
-hamming =  merge (subsequentPowersCousin 3 1) (subsequentPowersCousin 2 1)
+hamming =  overlappedProd (merge (subsequentPowersCousin 2 1) (subsequentPowersCousin 3 1))
