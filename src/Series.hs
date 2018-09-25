@@ -1,5 +1,5 @@
 module Series
-    ( ones,natural,fib, lukas, hamming, interleave, sieve, multiple
+    ( ones,natural,fib, lukas, hamming, interleave, sieve, subsequentPowers
     ) where
 
 import Debug.Trace
@@ -29,4 +29,6 @@ lukas = 1 : 3 : nextOverlappedNum lukas
 hamming = id
 interleave = id
 sieve = id 
-multiple = id 
+
+subsequentPowers :: Int-> [Int]
+subsequentPowers x =  iterate (x*) 1

@@ -3,4 +3,4 @@ module Main where
 import Series
 
 main :: IO ()
-main = print ((take 10 lukas))
+main = print $take 10 $ subsequentPowers 5
