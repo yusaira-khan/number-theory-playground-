@@ -3,4 +3,4 @@ module Main where
 import Series
 
 main :: IO ()
-main = putStrLn (show (take 5 natural))
+main = print ((take 10 lukas))
