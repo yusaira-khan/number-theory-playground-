@@ -1,6 +1,6 @@
 module Main where
 
-import Lib
+import Series
 
 main :: IO ()
-main = someFunc
+main = putStrLn (show (take 5 natural))

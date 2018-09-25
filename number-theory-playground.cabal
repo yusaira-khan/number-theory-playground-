@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 95e8054cf4218e2990ac89d5f9f88003c7a9dc60f586c1f6c0484e64d0ebc527
+-- hash: 0a77cc73383b5210c44db6434687a5a2af6029c7a50c1d84a193809e9531eeb5
 
 name:           number-theory-playground
 version:        0.1.0.0
@@ -27,6 +27,7 @@ source-repository head
 library
   exposed-modules:
       Lib
+      Series
   other-modules:
       Paths_number_theory_playground
   hs-source-dirs:
