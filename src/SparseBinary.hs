@@ -29,6 +29,8 @@ instance Enum SparseBinary where
         if (i <  fromEnum (minBound :: SparseBinary)) || (i > fromEnum (maxBound :: SparseBinary)) 
             then undefined
             else SparseBinary (toEnumHelper i 1 (getSparseBinary minBound))
+    --succ[4,1] == [4,2] == pred [4,2,1]
+    --succ[4,2] == [4,2,1] == pred [8]
     succ a = undefined
     pred a = undefined
 
