@@ -3,4 +3,4 @@ module Main where
 import Ops
 
 main :: IO ()
-main = print $ gcd' 36 24
+main = print $ lcm' 36 24
