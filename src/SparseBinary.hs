@@ -8,7 +8,7 @@ instance Bounded SparseBinary where
     --minBound :: SparseBinary
     minBound = SparseBinary [ ]
     --maxBound :: SparseBinary
-    maxBound = SparseBinary [128,64,32,16,8,4,2,1]
+    maxBound = SparseBinary [1,2,4,8,16,32,64,128]
 
 --todo, usefoldl
 fromEnumHelper :: [Word] -> Word -> Int
@@ -18,7 +18,7 @@ toEnumHelper :: Int -> Word -> [Word] -> [Word]
 toEnumHelper 0 _ sAcc = sAcc
 toEnumHelper i iPow sAcc = let 
         sAccNew = if (i `mod` 2) == 1 
-            then iPow:sAcc
+            then sAcc++[iPow]
             else sAcc
         in toEnumHelper (i `quot` 2) (iPow * 2) sAccNew
 
@@ -33,8 +33,8 @@ instance Enum SparseBinary where
         if (i <  fromEnum (minBound :: SparseBinary)) || (i > fromEnum (maxBound :: SparseBinary)) 
             then undefined
             else SparseBinary (toEnumHelper i 1 (getSparseBinary minBound))
-    --succ[4,1] == [4,2] == pred [4,2,1]
-    --succ[4,2] == [4,2,1] == pred [8]
+    --succ[1,4] == [2,4] == pred [1,2,4]
+    --succ[2,4] == [1,2,4]== pred [8]
     succ a = undefined
     pred a = undefined
 
