@@ -1,6 +1,6 @@
 module Main where
 
-import Series
+import Ops
 
 main :: IO ()
-main = print $take 30 fib 
+main = print $ gcd' 36 24
