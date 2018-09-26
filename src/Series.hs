@@ -1,5 +1,5 @@
 module Series
-    ( ones,natural,fib, lukas, hamming, interleave, sieve, subsequentPowers
+    ( ones,natural,fib, lukas, interleave, sieve, subsequentPowers
     ) where
 
 import Debug.Trace
@@ -40,4 +40,4 @@ subsequentPowersCousin x =  iterate (x*)
 
 merge:: [Int] -> [Int]-> [Int]
 merge xl@(x:xs) yl@(y:ys) = if (x < y) then (x:(merge xs yl)) else if (x == y) then (x:(merge xs ys)) else y:(merge xl ys)
-hamming =  overlappedProd (merge (subsequentPowersCousin 2 1) (subsequentPowersCousin 3 1))
+hamming_wrong =  overlappedProd (merge (subsequentPowersCousin 2 1) (subsequentPowersCousin 3 1))
