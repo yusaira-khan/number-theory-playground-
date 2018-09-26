@@ -1,20 +1,41 @@
+--{-# LANGUAGE InstanceSigs #-}
 module SparseBinary where
 
 newtype SparseBinary = SparseBinary { getSparseBinary :: [Word] } 
  --todo, make the constructor smart
 
 instance Bounded SparseBinary where
+    --minBound :: SparseBinary
     minBound = SparseBinary [ ]
+    --maxBound :: SparseBinary
     maxBound = SparseBinary [128,64,32,16,8,4,2,1]
 
+--todo, usefoldl
+fromEnumHelper :: [Word] -> Int -> Int
+fromEnumHelper [] acc = acc
+fromEnumHelper (s:ss) acc = fromEnumHelper ss (acc + fromIntegral s)
+
+toEnumHelper :: Int -> Word -> [Word] -> [Word]
+toEnumHelper 0 _ sAcc = sAcc
+toEnumHelper i iPow sAcc = let 
+        sAccNew = if (i `mod` 2) == 1 
+            then iPow:sAcc
+            else sAcc
+        in toEnumHelper (i `quot` 2) (iPow * 2) sAccNew
+
 instance Enum SparseBinary where
-    fromEnum a = undefined
-    toEnum a = undefined
+    -- fromEnum :: SparseBinary -> Int
+    fromEnum s = fromEnumHelper (getSparseBinary s) 0 
+    toEnum i = 
+        if (i <  fromEnum (minBound :: SparseBinary)) || (i > fromEnum (maxBound :: SparseBinary)) 
+            then undefined
+            else SparseBinary (toEnumHelper i 1 (getSparseBinary minBound))
     succ a = undefined
     pred a = undefined
 
 instance Show SparseBinary where
-     show a = show $ getSparseBinary a
+    --show :: SparseBinary -> String
+    show a = show $ getSparseBinary a
 
 instance Eq SparseBinary where
     (==) a b = undefined
