@@ -1,11 +1,11 @@
 module SparseBinary where
 
-newtype SparseBinary = SparseBinary { getSparseBinary :: [Word] } deriving (Show)
-
+newtype SparseBinary = SparseBinary { getSparseBinary :: [Word] } 
+ --todo, make the constructor smart
 
 instance Bounded SparseBinary where
-    minBound = undefined
-    maxBound = undefined
+    minBound = SparseBinary [ ]
+    maxBound = SparseBinary [128,64,32,16,8,4,2,1]
 
 instance Enum SparseBinary where
     fromEnum a = undefined
@@ -13,8 +13,8 @@ instance Enum SparseBinary where
     succ a = undefined
     pred a = undefined
 
--- instance Show SparseBinary where
---     show a = undefined
+instance Show SparseBinary where
+     show a = show $ getSparseBinary a
 
 instance Eq SparseBinary where
     (==) a b = undefined
@@ -36,5 +36,3 @@ instance Real SparseBinary where
 instance Integral SparseBinary where
     toInteger a = undefined
     quotRem a b = undefined
-
-
