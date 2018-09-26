@@ -17,7 +17,7 @@ overlappedProd :: [Int] -> [Int]
 overlappedProd (a : t@(b:_)) = (a*b) : overlappedProd t
 
 --infiniteloops
-nextNonOverlapped (a :b: t) = (a+b) : nextNonOverlappedNum (t)
+nextNonOverlappedNum (a :b: t) = (a+b) : nextNonOverlappedNum t
 nextNonOverlappedNum (b:t) = b:nextNonOverlappedNum (b:b:t)
 
 fib :: [Int]
@@ -39,5 +39,8 @@ subsequentPowersCousin :: Int -> Int  -> [Int]
 subsequentPowersCousin x =  iterate (x*) 
 
 merge:: [Int] -> [Int]-> [Int]
-merge xl@(x:xs) yl@(y:ys) = if (x < y) then (x:(merge xs yl)) else if (x == y) then (x:(merge xs ys)) else y:(merge xl ys)
-hamming_wrong =  overlappedProd (merge (subsequentPowersCousin 2 1) (subsequentPowersCousin 3 1))
+merge xl@(x : xs) yl@(y : ys)
+        | x < y = x : merge xs yl
+        | x == y = x : merge xs ys
+        | otherwise = y : merge xl ys
+hammingWrong =  overlappedProd (merge (subsequentPowersCousin 2 1) (subsequentPowersCousin 3 1))
