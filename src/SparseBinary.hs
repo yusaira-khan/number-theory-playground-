@@ -11,9 +11,8 @@ instance Bounded SparseBinary where
     maxBound = SparseBinary [128,64,32,16,8,4,2,1]
 
 --todo, usefoldl
-fromEnumHelper :: [Word] -> Int -> Int
-fromEnumHelper [] acc = acc
-fromEnumHelper (s:ss) acc = fromEnumHelper ss (acc + fromIntegral s)
+fromEnumHelper :: [Word] -> Word -> Int
+fromEnumHelper sl init = fromIntegral (foldl (+) init sl)
 
 toEnumHelper :: Int -> Word -> [Word] -> [Word]
 toEnumHelper 0 _ sAcc = sAcc
