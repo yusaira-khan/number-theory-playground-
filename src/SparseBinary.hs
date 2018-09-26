@@ -22,6 +22,10 @@ toEnumHelper i iPow sAcc = let
             else sAcc
         in toEnumHelper (i `quot` 2) (iPow * 2) sAccNew
 
+
+succHelper :: [Word] -> [Word]
+succHelper [] = [1]
+
 instance Enum SparseBinary where
     -- fromEnum :: SparseBinary -> Int
     fromEnum s = fromEnumHelper (getSparseBinary s) 0 
