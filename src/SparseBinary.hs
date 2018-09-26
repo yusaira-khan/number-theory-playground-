@@ -36,7 +36,7 @@ instance Enum SparseBinary where
 
 instance Show SparseBinary where
     --show :: SparseBinary -> String
-    show a = show $ getSparseBinary a
+    show a = "(SB=" ++ show (getSparseBinary a) ++ "|D=" ++ show (fromEnum a) ++ ")"
 
 instance Eq SparseBinary where
     (==) a b = undefined
