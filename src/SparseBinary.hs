@@ -4,7 +4,8 @@ import Debug.Trace
 
 newtype SparseBinary = SparseBinary { getSparseBinary :: [Word] } 
  --todo, make the constructor smart
-
+--todo, figure out difference between foldl and foldr
+-- document functionality in a shell like environment with prints
 instance Bounded SparseBinary where
     --minBound :: SparseBinary
     minBound = SparseBinary [ ]
@@ -82,7 +83,7 @@ instance Num SparseBinary where
         let 
             aW = getSparseBinary a
             bW = getSparseBinary b
-        in SparseBinary $ foldl addHelper  bW aW
+        in SparseBinary $ foldl (\aW' b -> foldl (*) aW' b) aW bW
     abs a = a
     signum a = if a == toEnum 0 then toEnum 0 else toEnum 1
     -- Integer -> SparseBinary
