@@ -1,5 +1,6 @@
 --{-# LANGUAGE InstanceSigs #-}
 module SparseBinary where
+import Debug.Trace
 
 newtype SparseBinary = SparseBinary { getSparseBinary :: [Word] } 
  --todo, make the constructor smart
@@ -34,10 +35,10 @@ powersOf2SmallerThan n =
     where halfN = quot n 2
 
 addHelper :: [Word] -> Word -> [Word]
-addHelper [] powerOf2 = [powerOf2]
+addHelper [] powerOf2 = trace ("adding to empty "++show powerOf2) [powerOf2]
 addHelper fullNums@(currentNum:rest) powerOf2 = 
     if  powerOf2 < currentNum 
-        then powerOf2:fullNums
+        then trace ("adding " ++ (show powerOf2) ++ " to " ++ (show fullNums)) powerOf2:fullNums
     else (powerOf2*2):rest --powerof2 == currentNum
 
 instance Enum SparseBinary where
