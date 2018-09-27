@@ -33,6 +33,13 @@ powersOf2SmallerThan n =
     powersOf2SmallerThan halfN ++ [halfN] 
     where halfN = quot n 2
 
+addHelper :: [Word] -> Word -> [Word]
+addHelper [] powerOf2 = [powerOf2]
+addHelper fullNums@(currentNum:rest) powerOf2 = 
+    if  powerOf2 < currentNum 
+        then powerOf2:fullNums
+    else (powerOf2*2):rest --powerof2 == currentNum
+
 instance Enum SparseBinary where
     -- fromEnum :: SparseBinary -> Int
     fromEnum s = fromEnumHelper (getSparseBinary s) 0 
@@ -64,7 +71,11 @@ instance Ord SparseBinary where
      compare a b =  undefined
 
 instance Num SparseBinary where
-    (+) a b = undefined 
+    (+) a b = 
+        let 
+            aW = getSparseBinary a
+            bW = getSparseBinary b
+        in SparseBinary $ foldl addHelper  bW aW 
     (*) a b = undefined
     abs a = undefined
     signum a = undefined
