@@ -37,9 +37,10 @@ powersOf2SmallerThan n =
 addHelper :: [Word] -> Word -> [Word]
 addHelper [] powerOf2 = trace ("adding to empty "++show powerOf2) [powerOf2]
 addHelper fullNums@(currentNum:rest) powerOf2 = 
-    if  powerOf2 < currentNum 
-        then trace ("adding " ++ (show powerOf2) ++ " to " ++ (show fullNums)) powerOf2:fullNums
-    else (powerOf2*2):rest --powerof2 == currentNum
+    case (compare powerOf2 currentNum) of 
+      LT -> trace ("adding " ++ (show powerOf2) ++ " to " ++ (show fullNums)) powerOf2:fullNums
+      EQ -> trace ("adding " ++ (show powerOf2) ++ " to " ++ (show fullNums) ++ "to give ") addHelper rest (powerOf2*2)
+      GT -> foldl addHelper  [powerOf2] fullNums
 
 instance Enum SparseBinary where
     -- fromEnum :: SparseBinary -> Int

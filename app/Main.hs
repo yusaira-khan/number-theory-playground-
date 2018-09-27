@@ -1,6 +1,11 @@
 module Main where
 
-import Ops
+import SparseBinary
 
 main :: IO ()
-main = print $ lcm' 36 24
+main = 
+    let 
+        a = (toEnum 64)::SparseBinary
+        b = succ a
+    in print a >> print b >> print (a+b)
+
