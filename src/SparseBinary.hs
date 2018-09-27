@@ -78,9 +78,13 @@ instance Num SparseBinary where
             aW = getSparseBinary a
             bW = getSparseBinary b
         in SparseBinary $ foldl addHelper  bW aW 
-    (*) a b = undefined
-    abs a = undefined
-    signum a = undefined
+    (*) a b = 
+        let 
+            aW = getSparseBinary a
+            bW = getSparseBinary b
+        in SparseBinary $ foldl addHelper  bW aW
+    abs a = a
+    signum a = if a == toEnum 0 then toEnum 0 else toEnum 1
     -- Integer -> SparseBinary
     fromInteger a = toEnum (fromIntegral a)
     (-) a b = undefined
