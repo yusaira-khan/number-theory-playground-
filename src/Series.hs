@@ -7,20 +7,20 @@ import Debug.Trace
 ones :: [Int]
 ones = repeat 1
 
-natural :: [Int]
-natural = iterate (+1) 0
+natural :: (Enum a, Num a) => [a]
+natural = iterate succ 0
 
-overlappedSum :: [Int] -> [Int]
+overlappedSum :: (Num a) => [a] -> [a]
 overlappedSum (a : t@(b:_)) = (a+b) : overlappedSum t
 
-overlappedProd :: [Int] -> [Int]
+overlappedProd :: (Num a) => [a] -> [a]
 overlappedProd (a : t@(b:_)) = (a*b) : overlappedProd t
 
 --infiniteloops
 nextNonOverlappedNum (a :b: t) = (a+b) : nextNonOverlappedNum t
 nextNonOverlappedNum (b:t) = b:nextNonOverlappedNum (b:b:t)
 
-fib :: [Int]
+fib :: (Num a) => [a]
 fib = 1 : 1 : overlappedSum fib
 
 --infinite loops

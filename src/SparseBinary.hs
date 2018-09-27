@@ -22,20 +22,23 @@ toEnumHelper i iPow sAcc = let
             else sAcc
         in toEnumHelper (i `quot` 2) (iPow * 2) sAccNew
 
-
-succHelper :: [Word] -> [Word]
-succHelper [] = [1]
+addNonConsecutivePowerOf2 :: [Word]->Word -> [Word]
+addNonConsecutivePowerOf2 [] p = [p] 
+addNonConsecutivePowerOf2 wl@(w:ws) p = if w == p then addNonConsecutivePowerOf2 ws (p*2) else p:wl
 
 instance Enum SparseBinary where
     -- fromEnum :: SparseBinary -> Int
     fromEnum s = fromEnumHelper (getSparseBinary s) 0 
+    -- Int -> SparseBinary
     toEnum i = 
         if (i <  fromEnum (minBound :: SparseBinary)) || (i > fromEnum (maxBound :: SparseBinary)) 
             then undefined
             else SparseBinary (toEnumHelper i 1 (getSparseBinary minBound))
     --succ[1,4] == [2,4] == pred [1,2,4]
     --succ[2,4] == [1,2,4]== pred [8]
-    succ a = undefined
+    --succ :: SparseBinary -> SparseBinary
+    succ a = if a == (maxBound :: SparseBinary) then undefined else SparseBinary $ addNonConsecutivePowerOf2  (getSparseBinary a) 1
+    --pred :: SparseBinary -> SparseBinary
     pred a = undefined
 
 instance Show SparseBinary where
@@ -43,7 +46,7 @@ instance Show SparseBinary where
     show a = "(SB=" ++ show (getSparseBinary a) ++ "|D=" ++ show (fromEnum a) ++ ")"
 
 instance Eq SparseBinary where
-    (==) a b = undefined
+    (==) a b = (getSparseBinary a) == (getSparseBinary b)
 
 instance Ord SparseBinary where
      compare a b =  undefined
@@ -53,7 +56,8 @@ instance Num SparseBinary where
     (*) a b = undefined
     abs a = undefined
     signum a = undefined
-    fromInteger a = undefined
+    -- Integer -> SparseBinary
+    fromInteger a = toEnum (fromIntegral a)
     (-) a b = undefined
 
 instance Real SparseBinary where
