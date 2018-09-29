@@ -39,9 +39,35 @@ addHelper :: [Word] -> Word -> [Word]
 addHelper [] powerOf2 = [powerOf2]
 addHelper fullNums@(currentNum:rest) powerOf2 = 
     case (compare powerOf2 currentNum) of 
-      LT -> powerOf2:fullNums
-      EQ -> addHelper rest (powerOf2*2)
-      GT -> currentNum :(addHelper rest powerOf2)
+        LT -> powerOf2:fullNums
+        EQ -> addHelper rest (powerOf2*2)
+        GT -> currentNum :(addHelper rest powerOf2)
+
+compareHelper :: [Word] -> [Word] -> Ordering
+compareHelper [] [] = EQ
+compareHelper [] _ = LT
+compareHelper _ [] = GT
+compareHelper al@(a:as) bl@(b:bs) =
+    let res = compareHelper as bs 
+    in case compare a b of
+        EQ -> compare as bs
+        LT -> compare as bl
+        GT -> compare al bs
+
+
+subHelper :: [Word] -> Word -> [Word]
+subHelper [] o = trace ("subtracting " ++ (show o) ++ " from empty") []
+subHelper fullNums@(currentNum:rest) powerOf2 = 
+    case trace ("subtracting " ++ (show powerOf2) ++ " from " ++ (show fullNums) ) (compare powerOf2 currentNum) of 
+        EQ ->  trace ("EQ == " ++ show rest ) rest 
+        LT ->   let 
+                    smaller = powersOf2SmallerThan currentNum
+                    subset = (dropWhile (<powerOf2) smaller)
+                    total = subset ++ rest
+                in trace ("LT == smaller " ++ (show subset) ++" to "++ (show total) ) total
+        GT -> currentNum :(subHelper rest powerOf2)
+
+    -- trace ("subtracting " ++ (show powerOf2) ++ " from " ++ (show fullNums) ) fullNums
 
 
 instance Enum SparseBinary where
@@ -72,7 +98,11 @@ instance Eq SparseBinary where
     (==) a b = getSparseBinary a == getSparseBinary b
 
 instance Ord SparseBinary where
-     compare a b =  undefined
+     compare a b = 
+        let 
+            aW = getSparseBinary a
+            bW = getSparseBinary b
+        in compareHelper aW bW
 
 instance Num SparseBinary where
     (+) a b = 
@@ -89,7 +119,13 @@ instance Num SparseBinary where
     signum a = if a == toEnum 0 then toEnum 0 else toEnum 1
     -- Integer -> SparseBinary
     fromInteger a = toEnum (fromIntegral a)
-    (-) a b = undefined
+    (-) a b = case compare a b of
+        EQ -> SparseBinary []
+        LT -> b - a
+        GT -> let 
+                aW = getSparseBinary a
+                bW = getSparseBinary b
+            in SparseBinary $ foldl subHelper aW bW
 
 instance Real SparseBinary where
     toRational a  = undefined
