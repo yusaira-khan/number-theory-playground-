@@ -46,12 +46,12 @@ compareHelper :: [Word] -> [Word] -> Ordering
 compareHelper [] [] = EQ
 compareHelper [] _ = LT
 compareHelper _ [] = GT
-compareHelper al@(a:as) bl@(b:bs) = let res =  compare a b in case compare a b of
+compareHelper al@(a:as) bl@(b:bs) = let res =  compare a b in case res of
         EQ -> compare as bs
         _ -> res
 
 subHelper :: [Word] -> Word -> [Word]
-subHelper [] o = trace ("subtracting " ++ (show o) ++ " from empty") []
+subHelper [] o = []
 subHelper fullNums@(currentNum:rest) powerOf2 = 
     case (compare powerOf2 currentNum) of 
         EQ -> rest 
@@ -117,30 +117,28 @@ instance Num SparseBinary where
         GT -> let 
                 aW = getSparseBinary a
                 bW = getSparseBinary b
-                j= SparseBinary $ foldl subHelper aW bW
-            in trace ("sub =" ++(show j) ) j
+            in SparseBinary $ foldl subHelper aW bW
 
 instance Real SparseBinary where
     toRational a  = fromIntegral $ fromEnum a
 
 quotHelper :: ([Word],SparseBinary) -> ([Word],[Word]) ->  Word -> ([Word],[Word])
--- quotHelper ([],sd) (q,r) p = trace ("empty " ++ (show (q,r,sd))) (q,r)
 quotHelper (n,sd) (q,r) p = 
-    case  trace ("is " ++( show p) ++ "greater than 1" )compare p 1 of
-        LT -> trace ("LT q,r="++(show (q,r))) (q,r)
+    case compare p 1 of
+        LT -> (q,r)
         _ ->
             let 
-                r' = trace ("r="++(show (r)++", q="++(show q))) map (2*) r
+                r' = map (2*) r
                 (ne,ns) = if n == [] then (0,[]) else (head n,tail n)
-                (n',r'') = if trace ("r'="++(show (r')++", ne"++(show ne))) (ne == p) then (ns,1:r') else (n,r')
+                (n',r'') = if (ne == p) then (ns,1:r') else (n,r')
                 sr'' = SparseBinary r''
-                (q',r''') = case  trace ("is " ++( show sr'') ++ "greater than "++(show sd) ) compare sr'' sd of 
-                                LT -> trace "LT "(q,r'')
+                (q',r''') = case compare sr'' sd of 
+                                LT ->(q,r'')
                                 _ -> let    wa = compare sr'' sd
                                             pq = (p:q) 
                                             srsd = (sr'' - sd)
-                                        in trace ("other pq"++(show pq)++" srsd="++show(srsd) ++  " wa"++(show wa)) ((p:q), getSparseBinary (sr''-sd))
-            in trace ("r'''="++(show r''')++", n'="++(show n')++"q'="++(show q')) (quotHelper (n',sd) (q',r''') (p`quot`2))
+                                        in ((p:q), getSparseBinary (sr''-sd))
+            in (quotHelper (n',sd) (q',r''') (p`quot`2))
 
 
 instance Integral SparseBinary where
