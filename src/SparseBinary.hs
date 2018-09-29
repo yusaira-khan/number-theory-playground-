@@ -58,13 +58,9 @@ compareHelper al@(a:as) bl@(b:bs) =
 subHelper :: [Word] -> Word -> [Word]
 subHelper [] o = trace ("subtracting " ++ (show o) ++ " from empty") []
 subHelper fullNums@(currentNum:rest) powerOf2 = 
-    case trace ("subtracting " ++ (show powerOf2) ++ " from " ++ (show fullNums) ) (compare powerOf2 currentNum) of 
-        EQ ->  trace ("EQ == " ++ show rest ) rest 
-        LT ->   let 
-                    smaller = powersOf2SmallerThan currentNum
-                    subset = (dropWhile (<powerOf2) smaller)
-                    total = subset ++ rest
-                in trace ("LT == smaller " ++ (show subset) ++" to "++ (show total) ) total
+    case (compare powerOf2 currentNum) of 
+        EQ -> rest 
+        LT -> (dropWhile (<powerOf2) $ powersOf2SmallerThan currentNum) ++ rest
         GT -> currentNum :(subHelper rest powerOf2)
 
     -- trace ("subtracting " ++ (show powerOf2) ++ " from " ++ (show fullNums) ) fullNums
