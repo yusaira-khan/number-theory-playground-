@@ -36,12 +36,12 @@ powersOf2SmallerThan n =
     where halfN = quot n 2
 
 addHelper :: [Word] -> Word -> [Word]
-addHelper [] powerOf2 = trace ("adding to empty "++show powerOf2) [powerOf2]
+addHelper [] powerOf2 = [powerOf2]
 addHelper fullNums@(currentNum:rest) powerOf2 = 
     case (compare powerOf2 currentNum) of 
-      LT -> trace ("LT adding " ++ (show powerOf2) ++ " to " ++ (show fullNums) ++ "to give " ++ show(powerOf2:fullNums)) powerOf2:fullNums
-      EQ -> trace ("EQ adding " ++ (show powerOf2) ++ " to " ++ (show fullNums) ++ "to give ") addHelper rest (powerOf2*2)
-      GT -> trace ("GT adding " ++ (show [powerOf2]) ++ " to " ++ (show fullNums) ++ "to give ") currentNum :(addHelper rest powerOf2)
+      LT -> powerOf2:fullNums
+      EQ -> addHelper rest (powerOf2*2)
+      GT -> currentNum :(addHelper rest powerOf2)
 
 instance Enum SparseBinary where
     -- fromEnum :: SparseBinary -> Int
