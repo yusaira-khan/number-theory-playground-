@@ -37,10 +37,10 @@ powersOf2SmallerThan n =
 addHelper :: [Word] -> Word -> [Word]
 addHelper [] powerOf2 = [powerOf2]
 addHelper fullNums@(currentNum:rest) powerOf2 = 
-    case (compare powerOf2 currentNum) of 
+    case compare powerOf2 currentNum of 
         LT -> powerOf2:fullNums
         EQ -> addHelper rest (powerOf2*2)
-        GT -> currentNum :(addHelper rest powerOf2)
+        GT -> currentNum :addHelper rest powerOf2
 
 compareHelper :: [Word] -> [Word] -> Ordering
 compareHelper [] [] = EQ
@@ -53,10 +53,10 @@ compareHelper al@(a:as) bl@(b:bs) = let res =  compare a b in case res of
 subHelper :: [Word] -> Word -> [Word]
 subHelper [] o = []
 subHelper fullNums@(currentNum:rest) powerOf2 = 
-    case (compare powerOf2 currentNum) of 
+    case compare powerOf2 currentNum of 
         EQ -> rest 
-        LT -> (dropWhile (<powerOf2) $ powersOf2SmallerThan currentNum) ++ rest
-        GT -> currentNum :(subHelper rest powerOf2)
+        LT -> dropWhile (<powerOf2)  (powersOf2SmallerThan currentNum) ++ rest
+        GT -> currentNum : subHelper rest powerOf2
 
 instance Enum SparseBinary where
     -- fromEnum :: SparseBinary -> Int
@@ -129,27 +129,27 @@ quotHelper (n,sd) (q,r) p =
         _ ->
             let 
                 r' = map (2*) r
-                (ne,ns) = if n == [] then (0,[]) else (head n,tail n)
-                (n',r'') = if (ne == p) then (ns,1:r') else (n,r')
+                (ne,ns) = if null n then (0,[]) else (head n,tail n)
+                (n',r'') = if ne == p then (ns,1:r') else (n,r')
                 sr'' = SparseBinary r''
                 (q',r''') = case compare sr'' sd of 
-                                LT ->(q,r'')
-                                _ -> let    wa = compare sr'' sd
-                                            pq = (p:q) 
-                                            srsd = (sr'' - sd)
-                                        in ((p:q), getSparseBinary (sr''-sd))
-            in (quotHelper (n',sd) (q',r''') (p`quot`2))
+                                LT -> (q,r'')
+                                _ -> (p:q, getSparseBinary (sr''-sd))
+            in quotHelper (n',sd) (q',r''') (p`quot`2)
 
 
 instance Integral SparseBinary where
     toInteger a = fromIntegral $ fromEnum a
-    quotRem a b =   if b == toEnum 0 then undefined else if a == toEnum 0 then (a,a) else let
+    quotRem a b  
+         | b == toEnum 0 = undefined 
+         | a == toEnum 0 = (a,a) 
+         | otherwise = let
                 aW = getSparseBinary a
                 aWR = reverse aW
                 largetsPowerOf2 = head aWR
                 (qW,rW) = quotHelper (aWR,b) ([],[]) largetsPowerOf2
             in (SparseBinary qW, SparseBinary rW)
-    quot  a b= fst $ quotRem a b
+    quot a b = fst $ quotRem a b
     rem a b = snd $ quotRem a b
     divMod = quotRem
     div = quot
