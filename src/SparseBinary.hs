@@ -136,7 +136,7 @@ quotHelper (n@(ne:ns),sd) (q,r) p =
                 (q',r''') = case  trace ("is " ++( show sr'') ++ "greater than "++(show sd) ) compare sr'' sd of 
                                 LT -> trace "LT "(q,r'')
                                 _ -> trace "other"((q++[p]), getSparseBinary (sr''-sd))
-            in trace ("r'''="++(show (r''')++", n="++(show n)++"q'="++(show (q')))) quotHelper (n,sd) (q',r''') (p*2)
+            in  trace "oh no " (trace ("r'''="++(show (r'''))++", n="++(show n)++"q'="++(show q')) (q',r'''))
 
 
 instance Integral SparseBinary where
