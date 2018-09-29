@@ -124,19 +124,19 @@ instance Real SparseBinary where
     toRational a  = fromIntegral $ fromEnum a
 
 quotHelper :: ([Word],SparseBinary) -> ([Word],[Word]) ->  Word -> ([Word],[Word])
-quotHelper ([],sd) (q,r) p = (q,r)
+quotHelper ([],sd) (q,r) p = trace ("empty " ++ (show (q,r,sd))) (q,r)
 quotHelper (n@(ne:ns),sd) (q,r) p = 
-    case  compare (SparseBinary [p]) sd of
-        GT -> (q,r)
+    case  trace ("is " ++( show p) ++ "greater than "++(show sd) )compare (SparseBinary [p]) sd of
+        GT -> trace ("GT q,r="++(show (q,r))) (q,r)
         _ ->
             let 
-                r' = map (2*) r
-                r'' = if ne == p then 1:r' else r'
+                r' = trace ("r="++(show (r)++", q="++(show q))) map (2*) r
+                (n,r'') = if trace ("r'="++(show (r')++", ne"++(show ne))) (ne == p) then (ns,1:r') else (n,r')
                 sr'' = SparseBinary r''
-                (q',r''') = case compare sr'' sd of 
-                                LT -> (q,r'')
-                                _ -> ((q++[p]), getSparseBinary (sr''-sd))
-            in quotHelper (ns,sd) (q',r''') (p*2)
+                (q',r''') = case  trace ("is " ++( show sr'') ++ "greater than "++(show sd) ) compare sr'' sd of 
+                                LT -> trace "LT "(q,r'')
+                                _ -> trace "other"((q++[p]), getSparseBinary (sr''-sd))
+            in trace ("r'''="++(show (r''')++", n="++(show n)++"q'="++(show (q')))) quotHelper (n,sd) (q',r''') (p*2)
 
 
 instance Integral SparseBinary where
