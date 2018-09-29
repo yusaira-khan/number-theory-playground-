@@ -4,7 +4,7 @@ module Series
 
 import Debug.Trace
 
-ones :: [Int]
+ones :: (Num a) => [a]
 ones = repeat 1
 
 natural :: (Enum a, Num a) => [a]
@@ -27,7 +27,7 @@ fib = 1 : 1 : overlappedSum fib
 fibscousin = 1 : 1 : nextNonOverlappedNum fibscousin
     
     --next (a : t@(b:_)) = ((traceStack (show (a,b))) (a+b)) : next t
-
+lukas :: (Num a) => [a]
 lukas = 1 : 3 : overlappedSum lukas
 interleave = id
 sieve = id 
