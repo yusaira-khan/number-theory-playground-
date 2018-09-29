@@ -25,18 +25,18 @@ fib = 1 : 1 : overlappedSum fib
 
 --infinite loops
 fibscousin = 1 : 1 : nextNonOverlappedNum fibscousin
-    
+
     --next (a : t@(b:_)) = ((traceStack (show (a,b))) (a+b)) : next t
 lukas :: (Num a) => [a]
 lukas = 1 : 3 : overlappedSum lukas
 interleave = id
-sieve = id 
+sieve = id
 
 subsequentPowers :: Int-> [Int]
 subsequentPowers x =  iterate (x*) 1
 
 subsequentPowersCousin :: Int -> Int  -> [Int]
-subsequentPowersCousin x =  iterate (x*) 
+subsequentPowersCousin x =  iterate (x*)
 
 merge:: [Int] -> [Int]-> [Int]
 merge xl@(x : xs) yl@(y : ys)

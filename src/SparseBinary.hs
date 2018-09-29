@@ -2,7 +2,7 @@
 module SparseBinary(SparseBinary(SparseBinary)) where
 import Debug.Trace
 
-newtype SparseBinary = SparseBinary { getSparseBinary :: [Word] } 
+newtype SparseBinary = SparseBinary {getSparseBinary :: [Word]}
  --todo, make the constructor smart
 --todo, figure out difference between foldl and foldr
 -- document functionality in a shell like environment with prints
@@ -18,26 +18,26 @@ fromEnumHelper sl init = fromIntegral (foldl (+) init sl)
 
 toEnumHelper :: Int -> Word -> [Word] -> [Word]
 toEnumHelper 0 _ sAcc = sAcc
-toEnumHelper i iPow sAcc = let 
-        sAccNew = if (i `mod` 2) == 1 
+toEnumHelper i iPow sAcc = let
+        sAccNew = if (i `mod` 2) == 1
             then sAcc++[iPow]
             else sAcc
         in toEnumHelper (i `quot` 2) (iPow * 2) sAccNew
 
-addNonConsecutivePowerOf2 :: [Word]->Word -> [Word]
-addNonConsecutivePowerOf2 [] p = [p] 
+addNonConsecutivePowerOf2 :: [Word] -> Word -> [Word]
+addNonConsecutivePowerOf2 [] p = [p]
 addNonConsecutivePowerOf2 wl@(w:ws) p = if w == p then addNonConsecutivePowerOf2 ws (p*2) else p:wl
 
 powersOf2SmallerThan :: Word -> [Word]
 powersOf2SmallerThan 1 = []
-powersOf2SmallerThan n = 
-    powersOf2SmallerThan halfN ++ [halfN] 
+powersOf2SmallerThan n =
+    powersOf2SmallerThan halfN ++ [halfN]
     where halfN = quot n 2
 
 addHelper :: [Word] -> Word -> [Word]
 addHelper [] powerOf2 = [powerOf2]
-addHelper fullNums@(currentNum:rest) powerOf2 = 
-    case compare powerOf2 currentNum of 
+addHelper fullNums@(currentNum:rest) powerOf2 =
+    case compare powerOf2 currentNum of
         LT -> powerOf2:fullNums
         EQ -> addHelper rest (powerOf2*2)
         GT -> currentNum :addHelper rest powerOf2
@@ -46,35 +46,35 @@ compareHelper :: [Word] -> [Word] -> Ordering
 compareHelper [] [] = EQ
 compareHelper [] _ = LT
 compareHelper _ [] = GT
-compareHelper al@(a:as) bl@(b:bs) = let res =  compare a b in case res of
+compareHelper al@(a:as) bl@(b:bs) = let res = compare a b in case res of
         EQ -> compare as bs
         _ -> res
 
 subHelper :: [Word] -> Word -> [Word]
 subHelper [] o = []
-subHelper fullNums@(currentNum:rest) powerOf2 = 
-    case compare powerOf2 currentNum of 
-        EQ -> rest 
-        LT -> dropWhile (<powerOf2)  (powersOf2SmallerThan currentNum) ++ rest
+subHelper fullNums@(currentNum:rest) powerOf2 =
+    case compare powerOf2 currentNum of
+        EQ -> rest
+        LT -> dropWhile (<powerOf2) (powersOf2SmallerThan currentNum) ++ rest
         GT -> currentNum : subHelper rest powerOf2
 
 instance Enum SparseBinary where
     -- fromEnum :: SparseBinary -> Int
-    fromEnum s = fromEnumHelper (getSparseBinary s) 0 
+    fromEnum s = fromEnumHelper (getSparseBinary s) 0
     -- Int -> SparseBinary
-    toEnum i = 
-        if (i <  fromEnum (minBound :: SparseBinary)) || (i > fromEnum (maxBound :: SparseBinary)) 
+    toEnum i =
+        if (i < fromEnum (minBound :: SparseBinary)) || (i > fromEnum (maxBound :: SparseBinary))
             then undefined
-            else SparseBinary (toEnumHelper i 1 (getSparseBinary minBound))
+            else SparseBinary (toEnumHelper i 1 [])
     --succ[1,4] == [2,4] == pred [1,2,4]
     --succ[2,4] == [1,2,4]== pred [8]
     --succ :: SparseBinary -> SparseBinary
-    succ a = if a == (maxBound :: SparseBinary) 
-        then undefined 
-        else SparseBinary $ addNonConsecutivePowerOf2  (getSparseBinary a) 1
+    succ a = if a == (maxBound :: SparseBinary)
+        then undefined
+        else SparseBinary $ addNonConsecutivePowerOf2 (getSparseBinary a) 1
     --pred :: SparseBinary -> SparseBinary
-    pred a = if a == (maxBound :: SparseBinary) 
-        then undefined 
+    pred a = if a == (maxBound :: SparseBinary)
+        then undefined
         else let b:bs = getSparseBinary a
         in SparseBinary $ powersOf2SmallerThan b ++ bs
 
@@ -87,8 +87,8 @@ instance Eq SparseBinary where
 
 instance Ord SparseBinary where
     --compare :: SparseBinary -> SparseBinary -> Ordering
-    compare a b = 
-        let 
+    compare a b =
+        let
             aW = getSparseBinary a
             aWR = reverse aW
             bW = getSparseBinary b
@@ -96,13 +96,13 @@ instance Ord SparseBinary where
         in compareHelper aWR bWR
 
 instance Num SparseBinary where
-    (+) a b = 
-        let 
+    (+) a b =
+        let
             aW = getSparseBinary a
             bW = getSparseBinary b
-        in SparseBinary $ foldl addHelper  bW aW 
-    (*) a b = 
-        let 
+        in SparseBinary $ foldl addHelper bW aW
+    (*) a b =
+        let
             aW = getSparseBinary a
             bW = getSparseBinary b
         in foldl (+) (SparseBinary []) (map (\b -> SparseBinary$ map (b*) aW ) bW)
@@ -114,35 +114,34 @@ instance Num SparseBinary where
     (-) a b = case compare a b of
         EQ -> SparseBinary []
         LT -> b - a
-        GT -> let 
+        GT -> let
                 aW = getSparseBinary a
                 bW = getSparseBinary b
             in SparseBinary $ foldl subHelper aW bW
 
 instance Real SparseBinary where
-    toRational a  = fromIntegral $ fromEnum a
+    toRational a = fromIntegral $ fromEnum a
 
-quotHelper :: ([Word],SparseBinary) -> ([Word],[Word]) ->  Word -> ([Word],[Word])
-quotHelper (n,sd) (q,r) p = 
+quotHelper :: ([Word],SparseBinary) -> ([Word],[Word]) -> Word -> ([Word],[Word])
+quotHelper (n,sd) (q,r) p =
     case compare p 1 of
         LT -> (q,r)
         _ ->
-            let 
+            let
                 r' = map (2*) r
                 (ne,ns) = if null n then (0,[]) else (head n,tail n)
                 (n',r'') = if ne == p then (ns,1:r') else (n,r')
                 sr'' = SparseBinary r''
-                (q',r''') = case compare sr'' sd of 
+                (q',r''') = case compare sr'' sd of
                                 LT -> (q,r'')
                                 _ -> (p:q, getSparseBinary (sr''-sd))
             in quotHelper (n',sd) (q',r''') (p`quot`2)
 
-
 instance Integral SparseBinary where
     toInteger a = fromIntegral $ fromEnum a
-    quotRem a b  
-         | b == toEnum 0 = undefined 
-         | a == toEnum 0 = (a,a) 
+    quotRem a b
+         | b == toEnum 0 = undefined
+         | a == toEnum 0 = (a,a)
          | otherwise = let
                 aW = getSparseBinary a
                 aWR = reverse aW
