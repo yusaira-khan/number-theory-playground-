@@ -43,6 +43,7 @@ addHelper fullNums@(currentNum:rest) powerOf2 =
       EQ -> addHelper rest (powerOf2*2)
       GT -> currentNum :(addHelper rest powerOf2)
 
+
 instance Enum SparseBinary where
     -- fromEnum :: SparseBinary -> Int
     fromEnum s = fromEnumHelper (getSparseBinary s) 0 
@@ -79,11 +80,11 @@ instance Num SparseBinary where
             aW = getSparseBinary a
             bW = getSparseBinary b
         in SparseBinary $ foldl addHelper  bW aW 
-    (*) a b = undefined
-    --     let 
-    --         aW = getSparseBinary a
-    --         bW = getSparseBinary b
-    --     in SparseBinary $ foldl (\aW' b -> foldl (*) aW' b) aW bW
+    (*) a b = 
+        let 
+            aW = getSparseBinary a
+            bW = getSparseBinary b
+        in foldl (+) (SparseBinary []) (map (\b -> SparseBinary$ map (b*) aW ) bW)
     abs a = a
     signum a = if a == toEnum 0 then toEnum 0 else toEnum 1
     -- Integer -> SparseBinary
