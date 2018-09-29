@@ -39,9 +39,9 @@ addHelper :: [Word] -> Word -> [Word]
 addHelper [] powerOf2 = trace ("adding to empty "++show powerOf2) [powerOf2]
 addHelper fullNums@(currentNum:rest) powerOf2 = 
     case (compare powerOf2 currentNum) of 
-      LT -> trace ("adding " ++ (show powerOf2) ++ " to " ++ (show fullNums)) powerOf2:fullNums
-      EQ -> trace ("adding " ++ (show powerOf2) ++ " to " ++ (show fullNums) ++ "to give ") addHelper rest (powerOf2*2)
-      GT -> foldl addHelper  [powerOf2] fullNums
+      LT -> trace ("LT adding " ++ (show powerOf2) ++ " to " ++ (show fullNums) ++ "to give " ++ show(powerOf2:fullNums)) powerOf2:fullNums
+      EQ -> trace ("EQ adding " ++ (show powerOf2) ++ " to " ++ (show fullNums) ++ "to give ") addHelper rest (powerOf2*2)
+      GT -> trace ("GT adding " ++ (show [powerOf2]) ++ " to " ++ (show fullNums) ++ "to give ") currentNum :(addHelper rest powerOf2)
 
 instance Enum SparseBinary where
     -- fromEnum :: SparseBinary -> Int
@@ -79,11 +79,11 @@ instance Num SparseBinary where
             aW = getSparseBinary a
             bW = getSparseBinary b
         in SparseBinary $ foldl addHelper  bW aW 
-    (*) a b = 
-        let 
-            aW = getSparseBinary a
-            bW = getSparseBinary b
-        in SparseBinary $ foldl (\aW' b -> foldl (*) aW' b) aW bW
+    (*) a b = undefined
+    --     let 
+    --         aW = getSparseBinary a
+    --         bW = getSparseBinary b
+    --     in SparseBinary $ foldl (\aW' b -> foldl (*) aW' b) aW bW
     abs a = a
     signum a = if a == toEnum 0 then toEnum 0 else toEnum 1
     -- Integer -> SparseBinary
