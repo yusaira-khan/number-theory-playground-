@@ -40,18 +40,29 @@ hasLinearDiophantineSolution :: Int -> Int -> Int -> Bool
 hasLinearDiophantineSolution a b c =
     let g = gcd' a b
     in isMultipleOf g c
-
+--substitute
 unstackDivInfo :: [DivInfo] -> (Int,Int)
 -- unstackDivInfo [] = (0,0)
-unstackDivInfo [d] = (1,-(getQ d))
-unstackDivInfo (d1:ds) =
+unstackDivInfo [d] = let (qA,qB)=(1,-(getQ d)) in
+    trace ("\n"++(show $ getR d)++
+        "=("++(show qA)++")("++
+        (show $ getA d)++")+("++(show qB)++")("++(show $ getB d)++")") (qA,qB)
+unstackDivInfo (d:ds) =
     let
-        (DivInfo {getA=a1,getB=b1,getQ=q1,getR=r1}) = d1
-        (m1,m2) = unstackDivInfo (ds)
-        (q1',q2') = (m2*q1, m2*q2)
-    in (q1',-q2')
+        (DivInfo {getA=a1,getB=b1,getQ=q,getR=r1}) = d
+        q2' = (-q)
+        q1' = 1
+        (q1,q2) = unstackDivInfo (ds)
+        (qA,qB) = (q1'*q2, q1+q2'*q2)
+    in trace ("\n"++(show $ getR d)++
+        "=("++(show qA)++")("++
+        (show $ getA d)++")+("++(show qB)++")("++(show $ getB d)++")") (qA,qB)
 
-modify g coeff val = ((*)(quot val g) coeff)
+modify g coeff val =
+    let
+        qg = traceShow (val,g)(quot val g)
+        m = traceShow (qg,coeff) qg * coeff
+    in m
 
 findSingleDiophantine :: Int -> Int -> Int -> (Int,Int)
 findSingleDiophantine a b c = let
@@ -61,6 +72,7 @@ findSingleDiophantine a b c = let
         divstack' = tail divstack
         coeffVar = c `quot` g
         (coeffA', coeffB') = if null divstack' then ((getQ $ head divstack),-g) else unstackDivInfo $ reverse divstack'
-        (coeffA'', coeffB'') = ((modify g coeffVar coeffA'), (modify g coeffVar coeffB'))
+        divg = if b' == g then g else 1
+        (coeffA'', coeffB'') = ((modify divg coeffVar coeffA'), (modify divg coeffVar coeffB'))
         (coeffA, coeffB) = if flip then (coeffB'',coeffA'') else (coeffA'',coeffB'')
     in (coeffA,coeffB)
