@@ -12,6 +12,14 @@ divisionString (a,b) = stringA ++ " = "++ stringQ ++"(" ++ stringB ++") + " ++ s
 
 data DivInfo = DivInfo{getA::Int, getB::Int, getQ::Int, getR::Int} deriving (Show)
 
+divInfoString :: DivInfo -> String
+divInfoString d = stringA ++ " = "++ stringQ ++"(" ++ stringB ++") + " ++ stringR
+    where
+        stringA = show $ getA d
+        stringB = show $ getB d
+        stringQ = show $ getQ d
+        stringR = show $ getR d
+
 --todo, use somesort of printer monad instead of trace
 gcd' :: (Integral a, Show a) => a -> a -> a
 gcd' a b = if a < b
@@ -32,9 +40,37 @@ lcm' a b = (a * b) `quot` gcd' a b
 isMultipleOf :: (Integral a, Show a) => a -> a -> Bool
 isMultipleOf a b = (b `rem` a) == 0
 
+diophantineSeries :: (Int,Int)-> (Int,Int)->(Int,Int)
+diophantineSeries (coeffA,coeffB) (a,b) =
+    ((a+coeffA),(b-coeffB))
 
 diophantineEquation :: Int -> Int -> Int -> [(Int,Int)]
-diophantineEquation a b c = undefined
+diophantineEquation a b c =  let
+        (a',b',flip) = if a < b then (b,a,True) else (a,b,False)
+        g = (gcd' a' b')
+    in if isMultipleOf g c then let
+            (bByG',aByG') = (b'`quot`g,a'`quot`g)
+            (initA', initB') = findSingleDiophantine a' b' c
+            ((bByG,aByG),(initA, initB)) = if flip then ((aByG',bByG'),(initB',initA')) else ((bByG',aByG'),(initA', initB'))
+            diophantineSucc = diophantineSeries (bByG,aByG)
+        in iterate diophantineSucc (initA,initB)
+        else undefined
+diophantineString :: Int -> Int -> Int -> String
+diophantineString a b c =  let
+        (a',b',flip) = if a < b then (b,a,True) else (a,b,False)
+        g = (gcd' a' b')
+    in if isMultipleOf g c then let
+            (bByG',aByG') = (b'`quot`g,a'`quot`g)
+            gcdstack = stackedGcd a' b' []
+            gcdstring = map divInfoString gcdstack
+            (initA', initB') = findSingleDiophantine a' b' c
+            ((bByG,aByG),(initA, initB)) = if flip then ((aByG',bByG'),(initB',initA')) else ((bByG',aByG'),(initA', initB'))
+            eqstring = "x="++(show initA)++"+n*"++(show bByG) ++ " | y="++(show initB)++"-n*"++(show aByG)
+            str = gcdstring ++[eqstring]
+        in unlines str
+        else undefined
+
+
 
 hasLinearDiophantineSolution :: Int -> Int -> Int -> Bool
 hasLinearDiophantineSolution a b c =
