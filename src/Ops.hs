@@ -42,26 +42,19 @@ hasLinearDiophantineSolution a b c =
     in isMultipleOf g c
 --substitute
 unstackDivInfo :: [DivInfo] -> (Int,Int)
--- unstackDivInfo [] = (0,0)
-unstackDivInfo [d] = let (qA,qB)=(1,-(getQ d)) in
-    trace ("\n"++(show $ getR d)++
-        "=("++(show qA)++")("++
-        (show $ getA d)++")+("++(show qB)++")("++(show $ getB d)++")") (qA,qB)
+unstackDivInfo [d] = (1,-(getQ d))
 unstackDivInfo (d:ds) =
     let
-        (DivInfo {getA=a1,getB=b1,getQ=q,getR=r1}) = d
-        q2' = (-q)
+        q2' = -(getQ d)
         q1' = 1
         (q1,q2) = unstackDivInfo (ds)
         (qA,qB) = (q1'*q2, q1+q2'*q2)
-    in trace ("\n"++(show $ getR d)++
-        "=("++(show qA)++")("++
-        (show $ getA d)++")+("++(show qB)++")("++(show $ getB d)++")") (qA,qB)
+    in (qA,qB)
 
 modify g coeff val =
     let
-        qg = traceShow (val,g)(quot val g)
-        m = traceShow (qg,coeff) qg * coeff
+        qg = (quot val g)
+        m = qg * coeff
     in m
 
 findSingleDiophantine :: Int -> Int -> Int -> (Int,Int)
