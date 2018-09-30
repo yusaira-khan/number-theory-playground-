@@ -1,6 +1,4 @@
-module Ops
-    ( gcd', lcm'
-    ) where
+module Ops where
 
 import Debug.Trace
 
@@ -12,7 +10,7 @@ divisionString (a,b) = stringA ++ " = "++ stringQ ++"(" ++ stringB ++") + " ++ s
         stringQ = show $ a `quot` b
         stringR = show $ a `rem` b
 
-data DivInfo = DivInfo{getA::Int, getB::Int, getQ::Int, getR::Int}
+data DivInfo = DivInfo{getA::Int, getB::Int, getQ::Int, getR::Int} deriving (Show)
 
 --todo, use somesort of printer monad instead of trace
 gcd' :: (Integral a, Show a) => a -> a -> a
@@ -44,23 +42,25 @@ hasLinearDiophantineSolution a b c =
     in isMultipleOf g c
 
 unstackDivInfo :: [DivInfo] -> (Int,Int)
-unstackDivInfo [] = (0,0)
+-- unstackDivInfo [] = (0,0)
 unstackDivInfo [d] = (1,-(getQ d))
-unstackDivInfo (d1:d2:ds) =
+unstackDivInfo (d1:ds) =
     let
         (DivInfo {getA=a1,getB=b1,getQ=q1,getR=r1}) = d1
-        (DivInfo {getA=a2,getB=b2,getQ=q2,getR=r2}) = d2
-        (m1,m2) = unstackDivInfo (d2:ds)
+        (m1,m2) = unstackDivInfo (ds)
         (q1',q2') = (m2*q1, m2*q2)
     in (q1',-q2')
+
+modify g coeff val = ((*)(quot val g) coeff)
 
 findSingleDiophantine :: Int -> Int -> Int -> (Int,Int)
 findSingleDiophantine a b c = let
         (a',b',flip) = if a < b then (b,a,True) else (a,b,False)
         divstack = stackedGcd a' b' []
-        g = getR $ head divstack
+        g = getB $ head divstack
+        divstack' = tail divstack
         coeffVar = c `quot` g
-        (coeffA', coeffB') = unstackDivInfo $ reverse divstack
-        (coeffA'', coeffB'') = (coeffA' * coeffVar, coeffB' * coeffVar)
-
-    in undefined
+        (coeffA', coeffB') = if null divstack' then ((getQ $ head divstack),-g) else unstackDivInfo $ reverse divstack'
+        (coeffA'', coeffB'') = ((modify g coeffVar coeffA'), (modify g coeffVar coeffB'))
+        (coeffA, coeffB) = if flip then (coeffB'',coeffA'') else (coeffA'',coeffB'')
+    in (coeffA,coeffB)
