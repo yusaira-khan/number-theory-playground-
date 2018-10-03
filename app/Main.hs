@@ -5,5 +5,5 @@ import Ops
 
 main :: IO ()
 main =
-    print $ findSingleDiophantine 4 2 6
+    print $ gcd' [4,2,6]
 
