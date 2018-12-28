@@ -4,8 +4,10 @@ import Debug.Trace
 
 
 gcd' :: [Int] -> Int
-gcd' [b]  =b
-gcd' bb@(b2:b:l) = if  (b < b2)
+-- ^The "gcd'" function finds the greatest common divisor  of numbers
+-- It takes in an array of elements
+gcd' [element]  =element
+gcd' elements@(firstElement:secondElement:rest) = if  (firstElement > secondElement)
     then error "could not gcd"
-    else let c =(b `rem` b2)
-    in (if c == 0 then  gcd' (b2:l) else gcd' (c:b2:l))
+    else let remainder =(secondElement `rem` firstElement)
+    in (if remainder == 0 then  gcd' (firstElement:l) else gcd' (secondElement:remainder:l))
