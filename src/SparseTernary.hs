@@ -1,7 +1,7 @@
---{-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE InstanceSigs ,  ScopedTypeVariables #-}
 module SparseTernary(SparseTernary(SparseTernary)) where
 import Debug.Trace
-
+---------NEEDS TESTING FOR EVERYTHING
 newtype SparseTernary = SparseTernary {getSparseTernary:: [Word]}
  --todo, make the constructor smart
 --todo, figure out difference between foldl and foldr
@@ -19,10 +19,11 @@ fromEnumHelper sl init = fromIntegral (foldl (+) init sl)
 toEnumHelper :: Int -> Word -> [Word] -> [Word]
 toEnumHelper 0 _ sAcc = sAcc
 toEnumHelper i iPow sAcc = let
-        mod3val = (i `mod` 3)
-        in let sAccNew = if mod3val == 0
-            then sAcc
-            else (sAcc*mod3val)++[iPow]
+        mod3val ::Word= fromIntegral (i `mod` 3)
+        in let sAccNew =
+                        if mod3val == 0
+                            then sAcc
+                            else (sAcc)++[iPow*mod3val]
         in toEnumHelper (i `quot` 3) (iPow * 3) sAccNew
 
 addNonConsecutivePowerOf3 :: [Word] -> Word -> [Word]
@@ -61,27 +62,27 @@ subHelper fullNums@(currentNum:rest) powerOf3 =
 
 instance Enum SparseTernary where
     -- fromEnum :: SparseBinary -> Int
-    fromEnum s = fromEnumHelper (getSparseBinary s) 0
+    fromEnum s = fromEnumHelper (getSparseTernary s) 0
     -- Int -> SparseBinary
     toEnum i =
-        if (i < fromEnum (minBound :: SparseBinary)) || (i > fromEnum (maxBound :: SparseBinary))
+        if (i < fromEnum (minBound :: SparseTernary)) || (i > fromEnum (maxBound :: SparseTernary))
             then undefined
-            else SparseBinary (toEnumHelper i 1 [])
+            else SparseTernary (toEnumHelper i 1 [])
     --succ[1,4] == [2,4] == pred [1,2,4]
     --succ[2,4] == [1,2,4]== pred [8]
     --succ :: SparseBinary -> SparseBinary
     succ a = if a == (maxBound :: SparseTernary)
         then undefined
-        else SparseTernary $ addNonConsecutivePowerOf2 (getSparseBinary a) 1
+        else SparseTernary $ addNonConsecutivePowerOf3 (getSparseTernary a) 1
     --pred :: SparseBinary -> SparseBinary
     pred a = if a == (maxBound :: SparseTernary)
         then undefined
-        else let b:bs = getSparseBinary a
-        in SparseTernary $ powersOf2SmallerThan b ++ bs
+        else let b:bs = getSparseTernary a
+        in SparseTernary $ powersOf3SmallerThan b ++ bs
 
 instance Show SparseTernary where
-    --show :: SparseBinary -> String
-    show a = "(SB=" ++ show (SparseTernary a) ++ "|D=" ++ show (fromEnum a) ++ ")"
+    --show :: SparseTernary -> String
+    show a = "(ST=" ++ show (getSparseTernary a) ++ "|D=" ++ show (fromEnum a) ++ ")"
 
 instance Eq SparseTernary where
     (==) a b = getSparseTernary a == getSparseTernary b
@@ -136,7 +137,7 @@ quotHelper (n,sd) (q,r) p =
                 (q',r''') = case compare sr'' sd of
                                 LT -> (q,r'')
                                 _ -> (p:q, getSparseTernary (sr''-sd))
-            in quotHelper (n',sd) (q',r''') (p`quot`2)
+            in quotHelper (n',sd) (q',r''') (p`quot`3)
 
 instance Integral SparseTernary where
     toInteger a = fromIntegral $ fromEnum a
