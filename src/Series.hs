@@ -1,5 +1,5 @@
 module Series
-    ( ones,natural,fib, lukas, interleave, sieve, subsequentPowers
+    ( ones,natural,fib, lukas, interleave, sieve, subsequentPowers, union,iterateMultiply
     ) where
 
 import Debug.Trace
@@ -31,16 +31,17 @@ lukas :: (Num a) => [a]
 lukas = 1 : 3 : overlappedSum lukas
 interleave = id
 sieve = id
-
+iterateMultiply :: (Num a) => a -> [a]
+iterateMultiply x y= y:iterateMultiply x x*y
 subsequentPowers :: Int-> [Int]
-subsequentPowers x =  iterate (x*) 1
+subsequentPowers x =  iterateMultiply x 1
 
-subsequentPowersCousin :: Int -> Int  -> [Int]
-subsequentPowersCousin x =  iterate (x*)
+-- subsequentPowersCousin :: Int -> Int  -> [Int]
+-- subsequentPowersCousin =  iterateMultiply
 
-merge:: [Int] -> [Int]-> [Int]
-merge xl@(x : xs) yl@(y : ys)
-        | x < y = x : merge xs yl
-        | x == y = x : merge xs ys
-        | otherwise = y : merge xl ys
-hammingWrong =  overlappedProd (merge (subsequentPowersCousin 2 1) (subsequentPowersCousin 3 1))
+union:: [Int] -> [Int]-> [Int]
+union xl@(x : xs) yl@(y : ys)
+        | x < y = x : union xs yl
+        | x == y = x : union xs ys
+        | otherwise = y : union xl ys
+-- hammingWrong =  overlappedProd (union (subsequentPowersCousin 2 1) (subsequentPowersCousin 3 1))
