@@ -31,11 +31,16 @@ lukas :: (Num a) => [a]
 lukas = 1 : 3 : overlappedSum lukas
 interleave = id
 sieve = id
-iterateMultiply :: (Num a) => a -> [a]
-iterateMultiply x y= y:iterateMultiply x x*y
+iterateMultiply :: (Num a) => a-> a -> [a]
+iterateMultiply x y= y:iterateMultiply x (x*y)
 subsequentPowers :: Int-> [Int]
 subsequentPowers x =  iterateMultiply x 1
 
+fib':: (Num a) => [a]
+fib' =0:fib''
+
+fib'':: (Num a) => [a]
+fib''=1:[(head fib'+ head fib'')]
 -- subsequentPowersCousin :: Int -> Int  -> [Int]
 -- subsequentPowersCousin =  iterateMultiply
 
