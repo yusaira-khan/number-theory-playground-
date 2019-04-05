@@ -1,5 +1,5 @@
 module Series
-    ( ones,natural,fib,fib',fib'', lukas, interleave, sieve, subsequentPowers, union,iterateMultiply
+    ( ones,natural,fib,fib',fib'', lukas, interleave, sieve, subsequentPowers, union,iterateMultiply, hammingSeries
     ) where
 
 import Debug.Trace
@@ -53,4 +53,5 @@ union xl@(x : xs) yl@(y : ys)
         | otherwise = y : union xl ys
 -- hammingWrong =  overlappedProd (union (subsequentPowersCousin 2 1) (subsequentPowersCousin 3 1))
 
--- hammingSeries
+hammingSeries = 1 : (union (ham 2) (union (ham 3)(ham 5)))
+ham n = map (n*) hammingSeries
