@@ -1,5 +1,5 @@
 module Series
-    ( ones,natural,fib, lukas, interleave, sieve, subsequentPowers, union,iterateMultiply
+    ( ones,natural,fib,fib',fib'', lukas, interleave, sieve, subsequentPowers, union,iterateMultiply
     ) where
 
 import Debug.Trace
@@ -36,11 +36,13 @@ iterateMultiply x y= y:iterateMultiply x (x*y)
 subsequentPowers :: Int-> [Int]
 subsequentPowers x =  iterateMultiply x 1
 
+addlazylist :: (Num a) => [a]-> [a]-> [a]
+addlazylist a b = ((head  a)+(head  b)):(addlazylist (tail a) (tail b))
 fib':: (Num a) => [a]
 fib' =0:fib''
 
 fib'':: (Num a) => [a]
-fib''=1:[(head fib'+ head fib'')]
+fib''=1:(addlazylist fib'  fib'')
 -- subsequentPowersCousin :: Int -> Int  -> [Int]
 -- subsequentPowersCousin =  iterateMultiply
 
@@ -50,3 +52,5 @@ union xl@(x : xs) yl@(y : ys)
         | x == y = x : union xs ys
         | otherwise = y : union xl ys
 -- hammingWrong =  overlappedProd (union (subsequentPowersCousin 2 1) (subsequentPowersCousin 3 1))
+
+-- hammingSeries
