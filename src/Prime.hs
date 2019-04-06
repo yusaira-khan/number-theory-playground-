@@ -13,3 +13,12 @@ isDivisibleBySinglePrime candidate primeKnown = ( getSqrtFloor candidate > prime
 isPrime:: Int -> Bool
 isPrime c = c<largestVal && any (isDivisibleBySinglePrime c) tenPrimes
 
+-- sieve::[Int]
+-- sieve = (functions)iterate (1+)
+
+
+--- append appplicatives?
+-- filtersieve p (x : xs)=  if (x%p ==0)then rest else x:rest where rest = filtersieve p xs
+
+-- sieve' = 2:filtersieve 2 sieve''
+-- sieve'' =3:
